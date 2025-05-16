@@ -1,0 +1,69 @@
+<pre>
+<h2>Dump is called from the function ErrorNumbers listCtor(ListInfo*, FILE*) </h2>
+my_list [0x7fffc42e5f40]
+my_list->cell [0x569f38ab34a0]
+my_list->capacity [0x7fffc42e5f48] = 16
+my_list->size [0x7fffc42e5f4c] = 0
+my_list->free [0x7fffc42e5f50] = 1
+my_list->cell->data:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+-123    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+my_list->cell->next:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   0    2    3    4    5    6    7    8    9   10   11   12   13   14   15    0 
+my_list->cell->prev
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+
+<img src = "image/Graf0.png" width = "1600">
+<h2>Dump is called from the function ErrorNumbers listInsertHead(ListInfo*, ListElem_t, FILE*) </h2>
+my_list [0x7fffc42e5f40]
+my_list->cell [0x569f38ab34a0]
+my_list->capacity [0x7fffc42e5f48] = 16
+my_list->size [0x7fffc42e5f4c] = 0
+my_list->free [0x7fffc42e5f50] = 1
+my_list->cell->data:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+-123    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+my_list->cell->next:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   0    2    3    4    5    6    7    8    9   10   11   12   13   14   15    0 
+my_list->cell->prev
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   0    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+
+<img src = "image/Graf1.png" width = "1600">
+<h2>Dump is called from the function ErrorNumbers listInsertHead(ListInfo*, ListElem_t, FILE*) </h2>
+my_list [0x7fffc42e5f40]
+my_list->cell [0x569f38ab34a0]
+my_list->capacity [0x7fffc42e5f48] = 16
+my_list->size [0x7fffc42e5f4c] = 1
+my_list->free [0x7fffc42e5f50] = 2
+my_list->cell->data:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+-123 -1003593890    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+my_list->cell->next:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   1    0    3    4    5    6    7    8    9   10   11   12   13   14   15    0 
+my_list->cell->prev
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   1    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+
+<img src = "image/Graf2.png" width = "1600">
+<h2>Dump is called from the function ErrorNumbers listDtor(ListInfo*, FILE*) </h2>
+my_list [0x7fffc42e5f40]
+my_list->cell [0x569f38ab34a0]
+my_list->capacity [0x7fffc42e5f48] = 16
+my_list->size [0x7fffc42e5f4c] = 1
+my_list->free [0x7fffc42e5f50] = 2
+my_list->cell->data:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+-123 -1003593890    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+my_list->cell->next:
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   1    0    3    4    5    6    7    8    9   10   11   12   13   14   15    0 
+my_list->cell->prev
+   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15 
+   1    0    0    0    0    0    0    0    0    0    0    0    0    0    0    0 
+
+<img src = "image/Graf3.png" width = "1600">
