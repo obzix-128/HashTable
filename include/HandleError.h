@@ -2,8 +2,10 @@
 #define HANDLEERROR_H
 
 #include "HashTable.h"
+#include "WorkingWithTable.h"
 
 ErrorNum handleError(ErrorNum error, const char* func_name);
+ErrorNum hashTableVerificator(HashTableInfo* hash_table);
 
 #define CHECK_ERROR_LIST(func) check_error_list = func; \
                                if(check_error_list != _NO_ERROR) \

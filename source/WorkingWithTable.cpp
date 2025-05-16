@@ -13,6 +13,7 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
     CHECK_NULL_ADDR_ERROR(log_file,  NULL_ADDRESS_ERROR);
 
     ErrorNum check_error_table = NO_ERROR;
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
 
     CHECK_ERROR_TABLE(skipBlankLines(&buffer));
 
@@ -34,14 +35,14 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
         size_t hash = calculateHash(buffer); // Считаю хэш для слова
 
         int save_val_num_occurrences = hash_table->bucket[hash].num_occurrences;
-        for(int i = hash_table->bucket[hash].list.cell[0].next; 
+        for(int i = hash_table->bucket[hash].list.cell[0].next; // Циклом проверяю наличие слова в таблице
             i != 0; 
-            i = hash_table->bucket[hash].list.cell[i].next     ) // Циклом проверяю наличие слова в таблице
+            i = hash_table->bucket[hash].list.cell[i].next     ) 
         {
-
-            if(!strncmp(buffer, hash_table->bucket[hash].list.cell[i].data, length)) // Если есть, увеличиваем счётчик появлений
-            {
-                if(hash_table->bucket[hash].list.cell[i].data[length] == '\0')
+            // Если есть, увеличиваем счётчик появлений
+            if(!strncmp(buffer, hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, length)) 
+            { 
+                if(hash_table->buffer[length + hash_table->bucket[hash].list.cell[i].data] == '\0')
                 {
                     hash_table->bucket[hash].num_occurrences += 1;
                     break;
@@ -51,11 +52,7 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
 
         if(save_val_num_occurrences == hash_table->bucket[hash].num_occurrences) // Если нет, то добавляем
         {
-            if(hash_table->size == hash_table->capacity - 1)
-            {
-                handleError(SIZE_ERROR, __PRETTY_FUNCTION__);
-                return SIZE_ERROR;
-            }
+            CHECK_ERROR_TABLE(hashTableChangeMemory(hash_table));
             
             for(size_t i = 0; i < length; i++)
             {
@@ -67,15 +64,10 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
             }
 
             ErrorNumbers check_error_list = _NO_ERROR;
-            CHECK_ERROR_LIST(listInsertHead(&hash_table->bucket[hash].list, &hash_table->buffer[hash_table->size * ALIGNMENT_D], log_file));
+            CHECK_ERROR_LIST(listInsertHead(&hash_table->bucket[hash].list, hash_table->size * ALIGNMENT_D, log_file));
 
             hash_table->bucket[hash].num_occurrences += 1;
             hash_table->size += 1;
-
-/*if(hash_table->bucket[hash].list.size > 14)
-{
-    CHECK_ERROR_LIST(listDump(&hash_table->bucket[hash].list, log_file, __PRETTY_FUNCTION__, -1, _STATUS_IS_UNCHANGED));
-}*/
         }
 
         buffer += length;
@@ -83,7 +75,46 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
         CHECK_ERROR_TABLE(skipBlankLines(&buffer));
     }
 
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+
     return check_error_table;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+При необходимости увеличивает размер буфера хэш таблицы
+------------------------------------------------------------------------------------------------------------------------------------*/
+ErrorNum hashTableChangeMemory(HashTableInfo* hash_table)
+{
+    CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
+
+    ErrorNum check_error_table = NO_ERROR;
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+
+    int new_capacity = 0;
+
+    if(hash_table->size == hash_table->capacity)
+    {
+        new_capacity = hash_table->capacity * 2;
+    }
+    else
+    {
+        return NO_ERROR;
+    }
+
+    char* new_buffer = (char*) aligned_alloc(ALIGNMENT_D, ALIGNMENT_D * new_capacity);
+    CHECK_NULL_ADDR_ERROR(new_buffer, ALLOC_ERROR);
+
+    memcpy(new_buffer, hash_table->buffer, ALIGNMENT_D * hash_table->capacity);
+    memset(hash_table->buffer, 0, ALIGNMENT_D * hash_table->capacity);
+
+    free(hash_table->buffer);
+
+    hash_table->buffer = new_buffer;
+    hash_table->capacity = new_capacity;
+
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+
+    return NO_ERROR;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------

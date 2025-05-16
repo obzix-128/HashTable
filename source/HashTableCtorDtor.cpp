@@ -8,7 +8,7 @@ ErrorNum hashTableCtor(HashTableInfo* hash_table, FILE* log_file)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
 
-    const int MIN_BUFFER_SIZE = 32768;
+    const int MIN_BUFFER_SIZE = 4096;
     hash_table->capacity = MIN_BUFFER_SIZE;
     hash_table->size = 0;
 
@@ -25,7 +25,10 @@ ErrorNum hashTableCtor(HashTableInfo* hash_table, FILE* log_file)
         hash_table->bucket[i].num_occurrences = 0;
     }
 
-    return NO_ERROR;
+    ErrorNum check_error_table = NO_ERROR;
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+
+    return check_error_table;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -34,6 +37,9 @@ ErrorNum hashTableCtor(HashTableInfo* hash_table, FILE* log_file)
 ErrorNum hashTableDtor(HashTableInfo* hash_table, FILE* log_file)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
+    
+    ErrorNum check_error_table = NO_ERROR;
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
 
     ErrorNumbers check_error_list = _NO_ERROR;
     for(int i = 0; i < NUM_OF_BUCKETS_D; i++)
@@ -53,5 +59,5 @@ ErrorNum hashTableDtor(HashTableInfo* hash_table, FILE* log_file)
     hash_table->buffer = NULL;
     hash_table->bucket = NULL;
 
-    return NO_ERROR;
+    return check_error_table;
 }

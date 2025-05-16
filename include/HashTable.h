@@ -8,15 +8,19 @@
 
 enum ErrorNum
 {
-    NO_ERROR           = 0,
-    LIST_ERROR         = 1,
-    NULL_ADDRESS_ERROR = 2,
-    ALLOC_ERROR        = 3,
-    STAT_ERROR         = 4,
-    READ_ERROR         = 5,
-    OPEN_ERROR         = 6,
-    LENGTH_ERROR       = 7,
-    SIZE_ERROR         = 8
+    NO_ERROR               = 0,
+    LIST_ERROR             = 1,
+    NULL_ADDRESS_ERROR     = 2,
+    ALLOC_ERROR            = 3,
+    STAT_ERROR             = 4,
+    READ_ERROR             = 5,
+    OPEN_ERROR             = 6,
+    LENGTH_ERROR           = 7,
+    SIZE_ERROR             = 8,
+    CAPACITY_ERROR         = 9,
+    BUCKET_DUPLICATE_ERROR = 10,
+    HASH_ERROR             = 11,
+    BUFFER_DUPLICATE_ERROR = 12,
 };
 
 struct Bucket_t

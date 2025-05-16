@@ -10,6 +10,7 @@
 #include "HandleError.h"
 
 ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file);
+ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
 size_t calculateHash(char* word);
 ErrorNum skipBlankLines(char** buffer);
 

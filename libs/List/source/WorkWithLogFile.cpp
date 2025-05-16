@@ -178,7 +178,7 @@ ErrorNumbers buildGraphs(ListInfo* my_list, FILE* log_file, int element_number, 
             fprintf(file_to_write, "\"#bbffff\",");
         }
 
-        fprintf(file_to_write, "label = \" ip = %d | next = %d | prev = %d | data = %s \"]\n", i,
+        fprintf(file_to_write, "label = \" ip = %d | next = %d | prev = %d | data = %d \"]\n", i,
                 my_list->cell[i].next, my_list->cell[i].prev, my_list->cell[i].data);
     }
 
