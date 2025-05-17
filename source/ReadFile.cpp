@@ -21,7 +21,7 @@ ErrorNum readFile(const char** file_name, char** buffer)
     FILE* file_with_data = fopen(*file_name, "r");
     CHECK_NULL_ADDR_ERROR(file_with_data, OPEN_ERROR);
 
-    *buffer = (char*) calloc(file_info.st_size, sizeof(char));
+    *buffer = (char*) calloc(file_info.st_size + 1, sizeof(char));
     CHECK_NULL_ADDR_ERROR(*buffer, ALLOC_ERROR);
 
     size_t num_of_elem_read = fread(*buffer, sizeof(char), file_info.st_size, file_with_data);
@@ -30,6 +30,8 @@ ErrorNum readFile(const char** file_name, char** buffer)
         handleError(READ_ERROR, __PRETTY_FUNCTION__);
         return READ_ERROR;
     }
+
+    (*buffer)[file_info.st_size] = '\0';
 
     fclose(file_with_data);
 
