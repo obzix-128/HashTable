@@ -13,7 +13,10 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
     CHECK_NULL_ADDR_ERROR(log_file,  NULL_ADDRESS_ERROR);
 
     ErrorNum check_error_table = NO_ERROR;
+
+    #ifdef _DEBUG
     CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
 
     CHECK_ERROR_TABLE(skipBlankLines(&buffer));
 
@@ -33,51 +36,77 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
         }
 
         size_t hash = calculateHash(buffer); // Считаю хэш для слова
+        int check_availability = 0;
+        CHECK_ERROR_TABLE(checkAvailability(hash_table, buffer, hash, length, &check_availability)); // Проверяем слово на наличие
 
-        int save_val_num_occurrences = hash_table->bucket[hash].num_occurrences;
-        for(int i = hash_table->bucket[hash].list.cell[0].next; // Циклом проверяю наличие слова в таблице
-            i != 0; 
-            i = hash_table->bucket[hash].list.cell[i].next     ) 
+        if(check_availability == 0) // Если его ещё нет, то добавляем
         {
-            // Если есть, увеличиваем счётчик появлений
-            if(!strncmp(buffer, hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, length)) 
-            { 
-                if(hash_table->buffer[length + hash_table->bucket[hash].list.cell[i].data] == '\0')
-                {
-                    hash_table->bucket[hash].num_occurrences += 1;
-                    break;
-                }
-            }
+            CHECK_ERROR_TABLE(insertWord(hash_table, buffer, hash, length, log_file));
         }
 
-        if(save_val_num_occurrences == hash_table->bucket[hash].num_occurrences) // Если нет, то добавляем
-        {
-            CHECK_ERROR_TABLE(hashTableChangeMemory(hash_table));
-            
-            for(size_t i = 0; i < length; i++)
-            {
-                hash_table->buffer[hash_table->size * ALIGNMENT_D + i] = buffer[i];
-            }
-            for(size_t i = length; i < ALIGNMENT_D; i++)
-            {
-                hash_table->buffer[hash_table->size * ALIGNMENT_D + i] = '\0';
-            }
-
-            ErrorNumbers check_error_list = _NO_ERROR;
-            CHECK_ERROR_LIST(listInsertHead(&hash_table->bucket[hash].list, hash_table->size * ALIGNMENT_D, log_file));
-
-            hash_table->bucket[hash].num_occurrences += 1;
-            hash_table->size += 1;
-        }
-
-        buffer += length;
+        buffer += length; // Переходим к следующему слову
 
         CHECK_ERROR_TABLE(skipBlankLines(&buffer));
     }
 
+    #ifdef _DEBUG
     CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
 
     return check_error_table;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Вставляет слово в хэш таблицу
+------------------------------------------------------------------------------------------------------------------------------------*/
+ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, FILE* log_file)
+{
+    CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
+    CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
+    
+    ErrorNum check_error_table = NO_ERROR;
+    CHECK_ERROR_TABLE(hashTableChangeMemory(hash_table));
+    
+    for(size_t i = 0; i < length; i++)
+    {
+        hash_table->buffer[hash_table->size * ALIGNMENT_D + i] = buffer[i];
+    }
+    for(size_t i = length; i < ALIGNMENT_D; i++)
+    {
+        hash_table->buffer[hash_table->size * ALIGNMENT_D + i] = '\0';
+    }
+
+    ErrorNumbers check_error_list = _NO_ERROR;
+    CHECK_ERROR_LIST(listInsertHead(&hash_table->bucket[hash].list, hash_table->size * ALIGNMENT_D, log_file));
+
+    hash_table->bucket[hash].num_occurrences += 1;
+    hash_table->size += 1;
+
+    return check_error_table;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Проверяет текущее слово на наличие в бакете, если оно уже есть, то не добавляем его и просто увеличиваем счётчик появлений
+------------------------------------------------------------------------------------------------------------------------------------*/
+ErrorNum checkAvailability(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* check_availability)
+{
+    CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
+    CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
+    
+    for(int i = hash_table->bucket[hash].list.cell[0].next; i != 0; i = hash_table->bucket[hash].list.cell[i].next) 
+    {
+        if(!strncmp(buffer, hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, length)) 
+        { 
+            if(hash_table->buffer[length + hash_table->bucket[hash].list.cell[i].data] == '\0')
+            {
+                hash_table->bucket[hash].num_occurrences += 1;
+                *check_availability = 1;
+                break;
+            }
+        }
+    }
+
+    return NO_ERROR;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -87,8 +116,10 @@ ErrorNum hashTableChangeMemory(HashTableInfo* hash_table)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
 
+    #ifdef _DEBUG
     ErrorNum check_error_table = NO_ERROR;
     CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
 
     int new_capacity = 0;
 
@@ -112,7 +143,9 @@ ErrorNum hashTableChangeMemory(HashTableInfo* hash_table)
     hash_table->buffer = new_buffer;
     hash_table->capacity = new_capacity;
 
+    #ifdef _DEBUG
     CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
 
     return NO_ERROR;
 }

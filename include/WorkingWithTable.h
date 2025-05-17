@@ -5,12 +5,13 @@
 #include <string.h>
 #include "../libs/List/include/ErrorHandler.h"
 #include "../libs/List/include/DifferentInserts.h"
-#include "../libs/List/include/WorkWithLogFile.h"
 #include "HashTable.h"
 #include "HandleError.h"
 
-ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file);
+ErrorNum fillHashTable        (HashTableInfo* hash_table, char* buffer, FILE* log_file);
+ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, FILE* log_file);
 ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
+ErrorNum checkAvailability    (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* check_availability);
 size_t calculateHash(char* word);
 ErrorNum skipBlankLines(char** buffer);
 

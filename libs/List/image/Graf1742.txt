@@ -1,0 +1,76 @@
+digraph
+{
+rankdir = LR;
+{
+{
+node[shape = plaintext];
+edge[color = white];
+_0_[label = " "]
+_1_[label = " "]
+_2_[label = " "]
+_3_[label = " "]
+_4_[label = " "]
+_5_[label = " "]
+_6_[label = " "]
+_7_[label = " "]
+_8_[label = " "]
+_9_[label = " "]
+_10_[label = " "]
+_11_[label = " "]
+_12_[label = " "]
+_13_[label = " "]
+_14_[label = " "]
+_15_[label = " "]
+_0_->_1_->_2_->_3_->_4_->_5_->_6_->_7_->_8_->_9_->_10_->_11_->_12_->_13_->_14_->_15_}
+_0[shape = record, style = "filled" fillcolor = "#ffc8ff", label = " ip = 0 | next = 5 | prev = 1 | data = -123 "]
+_5[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 5 | next = 4 | prev = 0 | data = 353408 "]
+_4[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 4 | next = 3 | prev = 5 | data = 320320 "]
+_3[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 3 | next = 2 | prev = 4 | data = 292512 "]
+_2[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 2 | next = 1 | prev = 3 | data = 211456 "]
+_1[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 1 | next = 0 | prev = 2 | data = 16096 "]
+_6[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 6 | next = 7 | prev = 0 | data = 0 "]
+_7[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 7 | next = 8 | prev = 0 | data = 0 "]
+_8[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 8 | next = 9 | prev = 0 | data = 0 "]
+_9[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 9 | next = 10 | prev = 0 | data = 0 "]
+_10[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 10 | next = 11 | prev = 0 | data = 0 "]
+_11[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 11 | next = 12 | prev = 0 | data = 0 "]
+_12[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 12 | next = 13 | prev = 0 | data = 0 "]
+_13[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 13 | next = 14 | prev = 0 | data = 0 "]
+_14[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 14 | next = 15 | prev = 0 | data = 0 "]
+_15[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 15 | next = 0 | prev = 0 | data = 0 "]
+{
+edge[color = "#50a0ff"];
+_5->_4->_3->_2->_1
+}
+{
+edge[color = "red"];
+_1->_2->_3->_4->_5
+}
+{
+_6->_7->_8->_9->_10->_11->_12->_13->_14->_15
+}
+{rank = same; "_0"; "_0_";}
+{rank = same; "_5"; "_1_";}
+{rank = same; "_4"; "_2_";}
+{rank = same; "_3"; "_3_";}
+{rank = same; "_2"; "_4_";}
+{rank = same; "_1"; "_5_";}
+{rank = same; "_6"; "_6_";}
+{rank = same; "_7"; "_7_";}
+{rank = same; "_8"; "_8_";}
+{rank = same; "_9"; "_9_";}
+{rank = same; "_10"; "_10_";}
+{rank = same; "_11"; "_11_";}
+{rank = same; "_12"; "_12_";}
+{rank = same; "_13"; "_13_";}
+{rank = same; "_14"; "_14_";}
+{rank = same; "_15"; "_15_";}
+
+}
+HEAD[shape = "octagon", style = "filled" fillcolor = "#ffffbb"];
+TAIL[shape = "octagon", style = "filled" fillcolor = "#ffffbb"];
+FREE[shape = "octagon", style = "filled" fillcolor = "#ffffbb"];
+HEAD->_5
+TAIL->_1
+FREE->_6
+}

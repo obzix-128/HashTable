@@ -26,8 +26,11 @@ ErrorNum hashTableCtor(HashTableInfo* hash_table, FILE* log_file)
     }
 
     ErrorNum check_error_table = NO_ERROR;
-    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
 
+    #ifdef _DEBUG
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
+    
     return check_error_table;
 }
 
@@ -38,8 +41,10 @@ ErrorNum hashTableDtor(HashTableInfo* hash_table, FILE* log_file)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     
+    #ifdef _DEBUG
     ErrorNum check_error_table = NO_ERROR;
     CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
 
     ErrorNumbers check_error_list = _NO_ERROR;
     for(int i = 0; i < NUM_OF_BUCKETS_D; i++)
