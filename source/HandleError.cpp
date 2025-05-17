@@ -109,6 +109,8 @@ ErrorNum hashTableVerificator(HashTableInfo* hash_table)
         for(int i = hash_table->bucket[counter].list.cell[0].next; i != 0; i = hash_table->bucket[counter].list.cell[i].next) 
         {
             size_t hash = calculateHash(hash_table->buffer + hash_table->bucket[counter].list.cell[i].data);
+            hash = hash % NUM_OF_BUCKETS_D; // Приведение к размеру таблицы
+
             if(hash != (size_t)counter)
             {
                 return HASH_ERROR;

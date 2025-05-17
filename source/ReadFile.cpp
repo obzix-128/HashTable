@@ -2,7 +2,7 @@
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-Читает из файла, название которого передаётся в *file_name, и записывает содержимое в буфер
+Читает из файла, название которого передаётся в *file_name, и записывает содержимое в буфер.
 ------------------------------------------------------------------------------------------------------------------------------------*/
 ErrorNum readFile(const char** file_name, char** buffer)
 {
@@ -35,3 +35,49 @@ ErrorNum readFile(const char** file_name, char** buffer)
 
     return NO_ERROR;
 }
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Проверяет, чтобы слова в буфере не превышали максимальной допустимой длины и считает их хэш.
+------------------------------------------------------------------------------------------------------------------------------------*/
+ErrorNum processWordFromBuffer(char* buffer, size_t* length, size_t* hash)
+{
+    CHECK_NULL_ADDR_ERROR(buffer, NULL_ADDRESS_ERROR);
+
+    size_t word_length = 0;
+    while(buffer[word_length] != '\n' && buffer[word_length] != '\0') // Считаю длину слова в буфере
+    {
+        word_length++;
+    }
+
+    if(word_length >= ALIGNMENT_D) // Проверяю слово на превышение длины
+    {
+        fprintf(stderr, "The error is caused by the word: %.*s\n", (unsigned int)word_length, buffer);
+        handleError(LENGTH_ERROR, __PRETTY_FUNCTION__);
+        return LENGTH_ERROR;
+    }
+
+    size_t word_hash = calculateHash(buffer); // Считаю хэш для слова
+    *hash = word_hash % NUM_OF_BUCKETS_D; // Приведение к размеру таблицы
+    *length = word_length;
+
+    return NO_ERROR;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Пропускает в буфере пустые строки.
+------------------------------------------------------------------------------------------------------------------------------------*/
+ErrorNum skipBlankLines(char** buffer)
+{
+    CHECK_NULL_ADDR_ERROR(buffer,  NULL_ADDRESS_ERROR);
+    CHECK_NULL_ADDR_ERROR(*buffer, NULL_ADDRESS_ERROR);
+
+    size_t counter = 0;
+    while((*buffer)[counter] == '\n')
+    {
+        counter++;
+    }
+    *buffer += counter;
+
+    return NO_ERROR;
+}
+

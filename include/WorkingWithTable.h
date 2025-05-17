@@ -5,14 +5,15 @@
 #include <string.h>
 #include "../libs/List/include/ErrorHandler.h"
 #include "../libs/List/include/DifferentInserts.h"
-#include "HashTable.h"
 #include "HandleError.h"
+#include "HashTable.h"
+#include "ReadFile.h"
 
-ErrorNum fillHashTable        (HashTableInfo* hash_table, char* buffer, FILE* log_file);
-ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, FILE* log_file);
-ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
-ErrorNum checkAvailability    (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* check_availability);
 size_t calculateHash(char* word);
-ErrorNum skipBlankLines(char** buffer);
+ErrorNum fillHashTable        (HashTableInfo* hash_table, char* buffer, FILE* log_file);
+ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, size_t hash, FILE* log_file);
+ErrorNum findWord             (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
+ErrorNum findWordsFromBuffer  (HashTableInfo* hash_table, char* buffer, int repeats, FILE* log_file);
+ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
 
 #endif // WORKINGWITHTABLE_H

@@ -10,7 +10,7 @@
 
 int main(const int argc, const char** argv)
 {
-    const int _NUMBERS_OF_ARGUMENTS = 4;
+    const int _NUMBERS_OF_ARGUMENTS = 5;
     if(argc != _NUMBERS_OF_ARGUMENTS)
     {
         errorHandler(_NUMBER_OF_ARG_ERROR, __PRETTY_FUNCTION__);
@@ -36,8 +36,16 @@ int main(const int argc, const char** argv)
 
     CHECK_ERROR_TABLE(hashTableDump(&hash_table, log_file_table, __PRETTY_FUNCTION__));
 
+    free(buffer);
+
+    CHECK_ERROR_TABLE(readFile(&argv[4], &buffer));
+
+    const int NUM_OF_REPEATS = 1;
+    CHECK_ERROR_TABLE(findWordsFromBuffer(&hash_table, buffer, NUM_OF_REPEATS, log_file_list));
+
     CHECK_ERROR_TABLE(hashTableDtor(&hash_table, log_file_list));
 
+    free(buffer);
     fclose(log_file_list );
     fclose(log_file_table);
 

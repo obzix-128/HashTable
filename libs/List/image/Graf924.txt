@@ -22,55 +22,52 @@ _13_[label = " "]
 _14_[label = " "]
 _15_[label = " "]
 _0_->_1_->_2_->_3_->_4_->_5_->_6_->_7_->_8_->_9_->_10_->_11_->_12_->_13_->_14_->_15_}
-_0[shape = record, style = "filled" fillcolor = "#ffc8ff", label = " ip = 0 | next = 6 | prev = 1 | data = -123 "]
-_6[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 6 | next = 5 | prev = 0 | data = 404800 "]
-_5[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 5 | next = 4 | prev = 6 | data = 394144 "]
-_4[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 4 | next = 3 | prev = 5 | data = 298400 "]
-_3[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 3 | next = 2 | prev = 4 | data = 170560 "]
-_2[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 2 | next = 1 | prev = 3 | data = 28256 "]
-_1[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 1 | next = 0 | prev = 2 | data = 7136 "]
-_7[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 7 | next = 8 | prev = 0 | data = 0 "]
-_8[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 8 | next = 9 | prev = 0 | data = 0 "]
-_9[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 9 | next = 10 | prev = 0 | data = 0 "]
-_10[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 10 | next = 11 | prev = 0 | data = 0 "]
-_11[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 11 | next = 12 | prev = 0 | data = 0 "]
-_12[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 12 | next = 13 | prev = 0 | data = 0 "]
-_13[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 13 | next = 14 | prev = 0 | data = 0 "]
-_14[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 14 | next = 15 | prev = 0 | data = 0 "]
-_15[shape = record, style = "filled" fillcolor = "#b0b0b0", label = " ip = 15 | next = 0 | prev = 0 | data = 0 "]
+_0[shape = record, style = "filled" fillcolor = "#ffc8ff", label = " ip = 0 | next = 15 | prev = 1 | data = -123 "]
+_15[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 15 | next = 14 | prev = 0 | data = 490560 "]
+_14[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 14 | next = 13 | prev = 15 | data = 470240 "]
+_13[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 13 | next = 12 | prev = 14 | data = 437920 "]
+_12[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 12 | next = 11 | prev = 13 | data = 365248 "]
+_11[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 11 | next = 10 | prev = 12 | data = 361792 "]
+_10[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 10 | next = 9 | prev = 11 | data = 293184 "]
+_9[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 9 | next = 8 | prev = 10 | data = 288832 "]
+_8[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 8 | next = 7 | prev = 9 | data = 273824 "]
+_7[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 7 | next = 6 | prev = 8 | data = 234272 "]
+_6[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 6 | next = 5 | prev = 7 | data = 139968 "]
+_5[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 5 | next = 4 | prev = 6 | data = 133792 "]
+_4[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 4 | next = 3 | prev = 5 | data = 101024 "]
+_3[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 3 | next = 2 | prev = 4 | data = 82688 "]
+_2[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 2 | next = 1 | prev = 3 | data = 11360 "]
+_1[shape = record, style = "filled" fillcolor = "#bbffff",label = " ip = 1 | next = 0 | prev = 2 | data = 5536 "]
 {
 edge[color = "#50a0ff"];
-_6->_5->_4->_3->_2->_1
+_15->_14->_13->_12->_11->_10->_9->_8->_7->_6->_5->_4->_3->_2->_1
 }
 {
 edge[color = "red"];
-_1->_2->_3->_4->_5->_6
-}
-{
-_7->_8->_9->_10->_11->_12->_13->_14->_15
+_1->_2->_3->_4->_5->_6->_7->_8->_9->_10->_11->_12->_13->_14->_15
 }
 {rank = same; "_0"; "_0_";}
-{rank = same; "_6"; "_1_";}
-{rank = same; "_5"; "_2_";}
-{rank = same; "_4"; "_3_";}
-{rank = same; "_3"; "_4_";}
-{rank = same; "_2"; "_5_";}
-{rank = same; "_1"; "_6_";}
-{rank = same; "_7"; "_7_";}
+{rank = same; "_15"; "_1_";}
+{rank = same; "_14"; "_2_";}
+{rank = same; "_13"; "_3_";}
+{rank = same; "_12"; "_4_";}
+{rank = same; "_11"; "_5_";}
+{rank = same; "_10"; "_6_";}
+{rank = same; "_9"; "_7_";}
 {rank = same; "_8"; "_8_";}
-{rank = same; "_9"; "_9_";}
-{rank = same; "_10"; "_10_";}
-{rank = same; "_11"; "_11_";}
-{rank = same; "_12"; "_12_";}
-{rank = same; "_13"; "_13_";}
-{rank = same; "_14"; "_14_";}
-{rank = same; "_15"; "_15_";}
+{rank = same; "_7"; "_9_";}
+{rank = same; "_6"; "_10_";}
+{rank = same; "_5"; "_11_";}
+{rank = same; "_4"; "_12_";}
+{rank = same; "_3"; "_13_";}
+{rank = same; "_2"; "_14_";}
+{rank = same; "_1"; "_15_";}
 
 }
 HEAD[shape = "octagon", style = "filled" fillcolor = "#ffffbb"];
 TAIL[shape = "octagon", style = "filled" fillcolor = "#ffffbb"];
 FREE[shape = "octagon", style = "filled" fillcolor = "#ffffbb"];
-HEAD->_6
+HEAD->_15
 TAIL->_1
-FREE->_7
+FREE->_0
 }

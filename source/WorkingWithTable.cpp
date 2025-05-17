@@ -2,9 +2,69 @@
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-Заполняет хэш таблицу словами из буфера buffer. Заполнение происходит с выравниванием каждого слова по 32 байта. Максимальная длина
-слова 31 байт, все не занятые буквами байты заполнятся нулями. Слова в буфере должны лежать по одному и их должно разделять \n.
-Все символы между \n воспринимаются как буквы.
+Хэш функция. Считает Хэш для слова, пока не встретит \n.
+Описание Хэш функции: https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+------------------------------------------------------------------------------------------------------------------------------------*/
+size_t calculateHash(char* word)
+{
+    assert(word);
+
+    const size_t OFFSET_BASIS = 2166136261u;  // Начальное значение (константа)
+    const size_t FNV_PRIME    = 16777619u;    // Простое число для умножения
+    
+    size_t hash = OFFSET_BASIS;
+    for(; *word != '\n' && *word != '\0'; word++)
+    {
+        hash ^= (size_t)*word;  // Шаг 1: XOR с текущим байтом
+        hash *= FNV_PRIME;      // Шаг 2: Умножение на FNV-prime
+    }
+
+    return hash;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Ищу в хэш таблице слова из буфера "repeats" раз.
+------------------------------------------------------------------------------------------------------------------------------------*/
+ErrorNum findWordsFromBuffer(HashTableInfo* hash_table, char* buffer, int repeats, FILE* log_file)
+{
+    CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
+    CHECK_NULL_ADDR_ERROR(buffer,    NULL_ADDRESS_ERROR);
+    CHECK_NULL_ADDR_ERROR(log_file,  NULL_ADDRESS_ERROR);
+
+    ErrorNum check_error_table = NO_ERROR;
+
+    #ifdef _DEBUG
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
+
+    CHECK_ERROR_TABLE(skipBlankLines(&buffer));
+
+    for(int i = 0; i < repeats; i++)
+    {
+        while(*buffer != '\0')
+        {
+            size_t length = 0;
+            size_t hash   = 0;
+            CHECK_ERROR_TABLE(processWordFromBuffer(buffer, &length, &hash));
+
+            int data = 0;
+            CHECK_ERROR_TABLE(findWord(hash_table, buffer, hash, length, &data));
+
+            buffer += length;
+
+            CHECK_ERROR_TABLE(skipBlankLines(&buffer));
+        }
+    }
+
+    #ifdef _DEBUG
+    CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
+    #endif // _DEBUG
+
+    return check_error_table;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Заполняю хэш таблицу словами из буфера. Слова должны быть разделены '\n'.
 ------------------------------------------------------------------------------------------------------------------------------------*/
 ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
 {
@@ -22,27 +82,17 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
 
     while(*buffer != '\0')
     {
-        size_t length = 0; // Считаю длину слова в буфере
-        while(buffer[length] != '\n' && buffer[length] != '\0')
-        {
-            length++;
-        }
+        size_t length = 0;
+        size_t hash   = 0;
+        CHECK_ERROR_TABLE(processWordFromBuffer(buffer, &length, &hash));
 
-        if(length >= ALIGNMENT_D) // Проверяю слово на превышение длины
-        {
-            fprintf(stderr, "The error is caused by the word: %.*s\n", (unsigned int)length, buffer);
-            handleError(LENGTH_ERROR, __PRETTY_FUNCTION__);
-            return LENGTH_ERROR;
-        }
+        int check_availability = -1;
+        CHECK_ERROR_TABLE(findWord(hash_table, buffer, hash, length, &check_availability)); // Проверяем слово на наличие
 
-        size_t hash = calculateHash(buffer); // Считаю хэш для слова
-        int check_availability = 0;
-        CHECK_ERROR_TABLE(checkAvailability(hash_table, buffer, hash, length, &check_availability)); // Проверяем слово на наличие
-
-        if(check_availability == 0) // Если его ещё нет, то добавляем
+        if(check_availability == -1) // Если его ещё нет, то добавляем
         {
-            CHECK_ERROR_TABLE(insertWord(hash_table, buffer, hash, length, log_file));
-        }
+            CHECK_ERROR_TABLE(insertWord(hash_table, buffer, hash, log_file));
+        }    
 
         buffer += length; // Переходим к следующему слову
 
@@ -57,23 +107,27 @@ ErrorNum fillHashTable(HashTableInfo* hash_table, char* buffer, FILE* log_file)
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-Вставляет слово в хэш таблицу
+Вставляет слово в хэш таблицу, если его ещё нет.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, FILE* log_file)
+ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, size_t hash, FILE* log_file)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
-    
+    CHECK_NULL_ADDR_ERROR(log_file,   NULL_ADDRESS_ERROR);
+
     ErrorNum check_error_table = NO_ERROR;
     CHECK_ERROR_TABLE(hashTableChangeMemory(hash_table));
     
-    for(size_t i = 0; i < length; i++)
+    size_t counter = 0;
+    while(buffer[counter] != '\n')
     {
-        hash_table->buffer[hash_table->size * ALIGNMENT_D + i] = buffer[i];
+        hash_table->buffer[hash_table->size * ALIGNMENT_D + counter] = buffer[counter];
+        counter++;
     }
-    for(size_t i = length; i < ALIGNMENT_D; i++)
+    while(counter < ALIGNMENT_D)
     {
-        hash_table->buffer[hash_table->size * ALIGNMENT_D + i] = '\0';
+        hash_table->buffer[hash_table->size * ALIGNMENT_D + counter] = '\0';
+        counter++;
     }
 
     ErrorNumbers check_error_list = _NO_ERROR;
@@ -86,21 +140,21 @@ ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-Проверяет текущее слово на наличие в бакете, если оно уже есть, то не добавляем его и просто увеличиваем счётчик появлений
+Проверяет текущее слово на наличие в бакете, если оно уже есть, то не добавляем его и просто увеличиваем счётчик появлений.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-ErrorNum checkAvailability(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* check_availability)
+ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
-    
+
     for(int i = hash_table->bucket[hash].list.cell[0].next; i != 0; i = hash_table->bucket[hash].list.cell[i].next) 
     {
-        if(!strncmp(buffer, hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, length)) 
+        if(!strncmp(hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, buffer, length)) 
         { 
-            if(hash_table->buffer[length + hash_table->bucket[hash].list.cell[i].data] == '\0')
+            if((hash_table->buffer + hash_table->bucket[hash].list.cell[i].data)[length] == '\0')
             {
                 hash_table->bucket[hash].num_occurrences += 1;
-                *check_availability = 1;
+                *value = hash_table->bucket[hash].list.cell[i].data;
                 break;
             }
         }
@@ -110,7 +164,7 @@ ErrorNum checkAvailability(HashTableInfo* hash_table, char* buffer, size_t hash,
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-При необходимости увеличивает размер буфера хэш таблицы
+При необходимости увеличивает размер буфера хэш таблицы.
 ------------------------------------------------------------------------------------------------------------------------------------*/
 ErrorNum hashTableChangeMemory(HashTableInfo* hash_table)
 {
@@ -148,42 +202,4 @@ ErrorNum hashTableChangeMemory(HashTableInfo* hash_table)
     #endif // _DEBUG
 
     return NO_ERROR;
-}
-
-/*------------------------------------------------------------------------------------------------------------------------------------
-Пропускает символы '\n' в буфере
-------------------------------------------------------------------------------------------------------------------------------------*/
-ErrorNum skipBlankLines(char** buffer)
-{
-    CHECK_NULL_ADDR_ERROR(buffer, NULL_ADDRESS_ERROR);
-
-    while(**buffer == '\n')
-    {
-        *buffer += 1;
-    }
-
-    return NO_ERROR;
-}
-
-/*------------------------------------------------------------------------------------------------------------------------------------
-Хэш функция. Считает Хэш для слова, пока не встретит \n.
-Описание Хэш функции: https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-------------------------------------------------------------------------------------------------------------------------------------*/
-size_t calculateHash(char* word)
-{
-    assert(word);
-
-    const size_t OFFSET_BASIS = 2166136261u;  // Начальное значение (константа)
-    const size_t FNV_PRIME    = 16777619u;    // Простое число для умножения
-    
-    size_t hash = OFFSET_BASIS;
-    for(; *word != '\n' && *word != '\0'; word++)
-    {
-        hash ^= (size_t)*word;  // Шаг 1: XOR с текущим байтом
-        hash *= FNV_PRIME;      // Шаг 2: Умножение на FNV-prime
-    }
-
-    hash = hash % NUM_OF_BUCKETS_D; // Приведение к размеру таблицы
-
-    return hash;
 }
