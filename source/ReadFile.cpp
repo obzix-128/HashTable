@@ -45,11 +45,7 @@ ErrorNum processWordFromBuffer(char* buffer, size_t* length, size_t* hash)
 {
     CHECK_NULL_ADDR_ERROR(buffer, NULL_ADDRESS_ERROR);
 
-    size_t word_length = 0;
-    while(buffer[word_length] != '\n' && buffer[word_length] != '\0') // Считаю длину слова в буфере
-    {
-        word_length++;
-    }
+    size_t word_length = strcspn(buffer, "\n"); // Считаю длину слова в буфере
 
     if(word_length >= ALIGNMENT_D) // Проверяю слово на превышение длины
     {

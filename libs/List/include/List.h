@@ -39,7 +39,11 @@ struct ListInfo
     int free;
 };
 
+#ifdef _DEBUG
 #define CHECK_NULL_ADDR_ERROR(variable, ERROR_NUMBER) if(variable == NULL) \
                                                           {return ERROR_NUMBER;}
+#else
+#define CHECK_NULL_ADDR_ERROR(variable, ERROR_NUMBER) 
+#endif // _DEBUG
 
 #endif // LIST_H

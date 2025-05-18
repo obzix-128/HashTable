@@ -5,7 +5,10 @@ FLAGS := -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equ
          -Wformat=2 -Wignored-qualifiers -Wlogical-op -Wno-missing-field-initializers \
          -Wnon-virtual-dtor -Woverloaded-virtual -Wpointer-arith -Wsign-promo -Wstack-usage=8192 \
          -Wstrict-aliasing -Wstrict-null-sentinel -Wtype-limits -Wwrite-strings -Werror=vla \
-         -D_DEBUG -D_EJUDGE_CLIENT_SIDE -DRELEASE_MODE_D -O1 -I./include
+         -DNDEBUG -D_EJUDGE_CLIENT_SIDE -DRELEASE_MODE_D -I./include
+
+#DEBUG_MODE: -D_DEBUG -fsanitize=address -g -O1; Для Дебага списка нужно убрать -DRELEASE_MODE_D
+#RELEASE_MODE: -DNDEBUG 
 
 CC := g++
 

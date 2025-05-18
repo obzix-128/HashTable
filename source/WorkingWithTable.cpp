@@ -25,7 +25,7 @@ size_t calculateHash(char* word)
 /*------------------------------------------------------------------------------------------------------------------------------------
 Ищу в хэш таблице слова из буфера "repeats" раз.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-ErrorNum findWordsFromBuffer(HashTableInfo* hash_table, char* buffer, int repeats, FILE* log_file)
+ErrorNum findWordsFromBuffer(HashTableInfo* hash_table, char* buffer, FILE* log_file)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,    NULL_ADDRESS_ERROR);
@@ -39,21 +39,18 @@ ErrorNum findWordsFromBuffer(HashTableInfo* hash_table, char* buffer, int repeat
 
     CHECK_ERROR_TABLE(skipBlankLines(&buffer));
 
-    for(int i = 0; i < repeats; i++)
+    while(*buffer != '\0')
     {
-        while(*buffer != '\0')
-        {
-            size_t length = 0;
-            size_t hash   = 0;
-            CHECK_ERROR_TABLE(processWordFromBuffer(buffer, &length, &hash));
+        size_t length = 0;
+        size_t hash   = 0;
+        CHECK_ERROR_TABLE(processWordFromBuffer(buffer, &length, &hash));
 
-            int data = 0;
-            CHECK_ERROR_TABLE(findWord(hash_table, buffer, hash, length, &data));
+        int data = 0;
+        CHECK_ERROR_TABLE(findWord(hash_table, buffer, hash, length, &data));
 
-            buffer += length;
+        buffer += length;
 
-            CHECK_ERROR_TABLE(skipBlankLines(&buffer));
-        }
+        CHECK_ERROR_TABLE(skipBlankLines(&buffer));
     }
 
     #ifdef _DEBUG
@@ -146,6 +143,7 @@ ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t l
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
+    CHECK_NULL_ADDR_ERROR(value,      NULL_ADDRESS_ERROR);
 
     for(int i = hash_table->bucket[hash].list.cell[0].next; i != 0; i = hash_table->bucket[hash].list.cell[i].next) 
     {

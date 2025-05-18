@@ -7,6 +7,7 @@
 ErrorNum handleError(ErrorNum error, const char* func_name);
 ErrorNum hashTableVerificator(HashTableInfo* hash_table);
 
+#ifdef _DEBUG
 #define CHECK_ERROR_LIST(func) check_error_list = func; \
                                if(check_error_list != _NO_ERROR) \
                                { \
@@ -20,5 +21,9 @@ ErrorNum hashTableVerificator(HashTableInfo* hash_table);
                                     handleError(check_error_table, __PRETTY_FUNCTION__); \
                                     return check_error_table; \
                                 }
+#else
+#define CHECK_ERROR_LIST(func) func
+#define CHECK_ERROR_TABLE(func) func
+#endif // _DEBUG
 
 #endif // HANDLEERROR_H

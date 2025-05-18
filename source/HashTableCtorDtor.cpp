@@ -40,9 +40,9 @@ ErrorNum hashTableCtor(HashTableInfo* hash_table, FILE* log_file)
 ErrorNum hashTableDtor(HashTableInfo* hash_table, FILE* log_file)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
-    
-    #ifdef _DEBUG
+
     ErrorNum check_error_table = NO_ERROR;
+    #ifdef _DEBUG
     CHECK_ERROR_TABLE(hashTableVerificator(hash_table));
     #endif // _DEBUG
 
