@@ -139,7 +139,7 @@ ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, size_t hash, FILE* 
 /*------------------------------------------------------------------------------------------------------------------------------------
 Проверяет текущее слово на наличие в бакете, если оно уже есть, то не добавляем его и просто увеличиваем счётчик появлений.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value)
+__attribute__((noinline)) ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
@@ -147,7 +147,7 @@ ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t l
 
     for(int i = hash_table->bucket[hash].list.cell[0].next; i != 0; i = hash_table->bucket[hash].list.cell[i].next) 
     {
-        if(!strncmp(hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, buffer, length)) 
+        if(!myStrncmp(hash_table->buffer + hash_table->bucket[hash].list.cell[i].data, buffer, length)) 
         { 
             if((hash_table->buffer + hash_table->bucket[hash].list.cell[i].data)[length] == '\0')
             {
@@ -159,6 +159,29 @@ ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t l
     }
 
     return NO_ERROR;
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------
+Моя версия strncmp, оптимизированная intrinsic-ами. Сравнивает строки длинной не более 32 байт.
+------------------------------------------------------------------------------------------------------------------------------------*/
+inline int myStrncmp(char *str_one, char *str_two, size_t num) 
+{
+    __m256i first  = _mm256_loadu_si256((__m256i*)(str_one));
+    __m256i second = _mm256_loadu_si256((__m256i*)(str_two));
+
+    __m256i cmp = _mm256_cmpeq_epi8(first, second);
+                  
+    uint32_t mask = _mm256_movemask_epi8(cmp);
+
+    if(mask != 0xFFFFFFFF) 
+    {
+        if(__builtin_ctz(~mask) < num)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------

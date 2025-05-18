@@ -3,6 +3,8 @@
 
 #include <assert.h>
 #include <string.h>
+#include <immintrin.h>
+#include <stdint.h>
 #include "../libs/List/include/ErrorHandler.h"
 #include "../libs/List/include/DifferentInserts.h"
 #include "HandleError.h"
@@ -15,5 +17,6 @@ ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, size_t h
 ErrorNum findWord             (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
 ErrorNum findWordsFromBuffer  (HashTableInfo* hash_table, char* buffer, FILE* log_file);
 ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
+int myStrncmp(char *str_one, char *str_two, size_t num);
 
 #endif // WORKINGWITHTABLE_H
