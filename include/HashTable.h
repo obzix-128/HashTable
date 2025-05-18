@@ -38,8 +38,6 @@ struct HashTableInfo
     int size;
 };
 
-typedef ErrorNum (*ProcessWordFunc_t)(HashTableInfo* hash_table, char* buffer, size_t hash, size_t value, FILE* log_file);
-
 #define ALIGNMENT_D 32
 #define NUM_OF_BUCKETS_D 1223
 

@@ -14,9 +14,10 @@
 size_t calculateHash(char* word);
 ErrorNum fillHashTable        (HashTableInfo* hash_table, char* buffer, FILE* log_file);
 ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, size_t hash, FILE* log_file);
-ErrorNum findWord             (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
 ErrorNum findWordsFromBuffer  (HashTableInfo* hash_table, char* buffer, FILE* log_file);
 ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
-int myStrncmp(char *str_one, char *str_two, size_t num);
+extern "C" int myStrncmp(char *str_one, char *str_two, size_t num);
+//ErrorNum findWord         (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
+extern "C" ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
 
 #endif // WORKINGWITHTABLE_H

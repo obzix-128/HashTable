@@ -139,7 +139,7 @@ ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, size_t hash, FILE* 
 /*------------------------------------------------------------------------------------------------------------------------------------
 Проверяет текущее слово на наличие в бакете, если оно уже есть, то не добавляем его и просто увеличиваем счётчик появлений.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-__attribute__((noinline)) ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value)
+/*__attribute__((noinline)) ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
@@ -159,12 +159,12 @@ __attribute__((noinline)) ErrorNum findWord(HashTableInfo* hash_table, char* buf
     }
 
     return NO_ERROR;
-}
+}*/
 
 /*------------------------------------------------------------------------------------------------------------------------------------
 Моя версия strncmp, оптимизированная intrinsic-ами. Сравнивает строки длинной не более 32 байт.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-inline int myStrncmp(char *str_one, char *str_two, size_t num) 
+extern "C" int myStrncmp(char *str_one, char *str_two, size_t num) 
 {
     __m256i first  = _mm256_loadu_si256((__m256i*)(str_one));
     __m256i second = _mm256_loadu_si256((__m256i*)(str_two));

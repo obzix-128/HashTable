@@ -11,19 +11,25 @@ FLAGS := -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equ
 #RELEASE_MODE: -DNDEBUG 
 
 CC := g++
+ASM := nasm
+ASMFLAGS := -f elf64
 
 objects := $(patsubst source/%.cpp, objects/%.o, $(wildcard source/*.cpp))
-
+asm_objects := $(patsubst source/%.asm, objects/%.o, $(wildcard source/*.asm))
 list_objects := $(patsubst libs/List/source/%.cpp, libs/List/objects/%.o, $(wildcard libs/List/source/*.cpp))
 
 all: do
 
-do: $(objects) $(list_objects)
+do: $(objects) $(asm_objects) $(list_objects)
 	@$(CC) $^ $(FLAGS) -o $@
 
 objects/%.o: source/%.cpp
 	@mkdir -p objects
 	@$(CC) -c $< $(FLAGS) -o $@
+
+objects/%.o: source/%.asm
+	@mkdir -p objects
+	@$(ASM) $(ASMFLAGS) $< -o $@
 
 libs/List/objects/%.o: libs/List/source/%.cpp
 	@mkdir -p libs/List/objects
