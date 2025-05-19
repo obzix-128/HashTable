@@ -18,6 +18,5 @@ ErrorNum findWordsFromBuffer  (HashTableInfo* hash_table, char* buffer, FILE* lo
 ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
 int myStrncmp(char *str_one, char *str_two, size_t num);
 ErrorNum findWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, size_t length, int* value);
-//extern "C" ErrorNum findWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, size_t length, int* value);
 
 #endif // WORKINGWITHTABLE_H

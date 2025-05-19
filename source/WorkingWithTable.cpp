@@ -3,47 +3,47 @@
 
 /*------------------------------------------------------------------------------------------------------------------------------------
 Хэш функция. Считает Хэш для слова, пока не встретит \n.
-Описание Хэш функции: https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+Дополнительная информация по хэш функции здесь: https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 ------------------------------------------------------------------------------------------------------------------------------------*/
-uint32_t calculateHash(char *word, size_t length) 
+/*uint32_t calculateHash(char *word, size_t length) 
 {
     uint32_t crc = 0xFFFFFFFF;
 
     for(size_t i = 0; i < length; i++) 
     {
         crc ^= word[i];
-        for (int j = 0; j < 8; j++) 
+        for(int j = 0; j < 8; j++) 
         {
-            crc = (crc >> 1) ^ ((crc & 1) ? 0xEDB88320 : 0);
+            crc = (crc >> 1) ^ (0x82F63B78 & -(crc & 1));
         }
     }
     return ~crc;
-}
-/*uint32_t calculateHash(char* word, size_t length)
+}*/
+uint32_t calculateHash(char* word, size_t length)
 {
     uint32_t hash = 0xFFFFFFFF;
 
     __asm__ volatile (
-        ".intel_syntax noprefix\n"          // Переключаемся на Intel-синтаксис
-        "mov %[h], 0xFFFFFFFF\n"         // Инициализация hash = 0xFFFFFFFF
-        "test %[len], %[len]\n"             // Проверка длины (length == 0?)
-        "jz .Ldone\n"                       // Если длина 0, пропустить цикл
+        ".intel_syntax noprefix\n"        // Переключаемся на Intel-синтаксис
+        "mov %[h], 0xFFFFFFFF\n"          // Инициализация hash = 0xFFFFFFFF
+        "test %[len], %[len]\n"           // Проверка длины (length == 0?)
+        "jz .Ldone\n"                     // Если длина 0, пропустить цикл
         ".Lloop:\n"
         "crc32 %[h], byte ptr [%[ptr]]\n" // CRC32 для текущего байта (Intel-синтаксис)
-        "inc %[ptr]\n"                      // Переход к следующему байту
-        "dec %[len]\n"                      // Уменьшение счётчика
-        "jnz .Lloop\n"                      // Повторять, пока len != 0
+        "inc %[ptr]\n"                    // Переход к следующему байту
+        "dec %[len]\n"                    // Уменьшение счётчика
+        "jnz .Lloop\n"                    // Повторять, пока len != 0
         ".Ldone:\n"
-        "not %[h]\n"                     // Инвертирование битов (финальный шаг CRC32)
-        ".att_syntax prefix\n"              // Возвращаемся к AT&T-синтаксису (по умолчанию в GCC)
-        : [h] "+r" (hash)                // Выход: обновлённый hash
-        : [ptr] "r" (word),                  // Вход: указатель на строку
-          [len] "r" (length)                // Вход: длина строки
-        : "cc", "memory"                   // Сообщаем компилятору о изменении флагов и памяти
+        "not %[h]\n"                      // Инвертирование битов (финальный шаг CRC32)
+        ".att_syntax prefix\n"            // Возвращаемся к AT&T-синтаксису (по умолчанию в GCC)
+        : [h] "+r" (hash)                 // Выход: обновлённый hash
+        : [ptr] "r" (word),               // Вход: указатель на строку
+          [len] "r" (length)              // Вход: длина строки
+        : "cc", "memory"                  // Сообщаем компилятору о изменении флагов и памяти
     );
 
     return hash;
-}*/
+}
 
 /*------------------------------------------------------------------------------------------------------------------------------------
 Ищу в хэш таблице слова из буфера "repeats" раз.
@@ -162,7 +162,7 @@ ErrorNum insertWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, FILE
 /*------------------------------------------------------------------------------------------------------------------------------------
 Проверяет текущее слово на наличие в бакете, если оно уже есть, то не добавляем его и просто увеличиваем счётчик появлений.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-__attribute__((noinline)) ErrorNum findWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, size_t length, int* value)
+ErrorNum findWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, size_t length, int* value)
 {
     CHECK_NULL_ADDR_ERROR(hash_table, NULL_ADDRESS_ERROR);
     CHECK_NULL_ADDR_ERROR(buffer,     NULL_ADDRESS_ERROR);
@@ -185,9 +185,9 @@ __attribute__((noinline)) ErrorNum findWord(HashTableInfo* hash_table, char* buf
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-Моя версия strncmp, оптимизированная intrinsic-ами. Сравнивает строки длинной не более 32 байт.
+Моя версия strncmp, оптимизированная intrinsic-ами. Сравнивает строки длинной не более 32 байт. __attribute__((noinline))
 ------------------------------------------------------------------------------------------------------------------------------------*/
-__attribute__((noinline)) int myStrncmp(char *str_one, char *str_two, size_t num) 
+int myStrncmp(char *str_one, char *str_two, size_t num) 
 {
     __m256i first  = _mm256_loadu_si256((__m256i*)(str_one));
     __m256i second = _mm256_loadu_si256((__m256i*)(str_two));
