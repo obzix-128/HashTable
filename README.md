@@ -132,5 +132,10 @@
 Итак, написав программу, приступаем к её анализу. 
 
 
+<div align="center"><img src="ReadMeImage/firstVersion.png"></div><br>
+<div align="center">Рисунок 1. Первая версия программы без каких-либо оптимизаций</div><br>
+  
+
+
 
 ## Итоги
