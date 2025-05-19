@@ -11,13 +11,13 @@
 #include "HashTable.h"
 #include "ReadFile.h"
 
-size_t calculateHash(char* word);
+uint32_t calculateHash(char* word, size_t length);
 ErrorNum fillHashTable        (HashTableInfo* hash_table, char* buffer, FILE* log_file);
-ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, size_t hash, FILE* log_file);
+ErrorNum insertWord           (HashTableInfo* hash_table, char* buffer, uint32_t hash, FILE* log_file);
 ErrorNum findWordsFromBuffer  (HashTableInfo* hash_table, char* buffer, FILE* log_file);
 ErrorNum hashTableChangeMemory(HashTableInfo* hash_table);
-extern "C" int myStrncmp(char *str_one, char *str_two, size_t num);
-//ErrorNum findWord         (HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
-extern "C" ErrorNum findWord(HashTableInfo* hash_table, char* buffer, size_t hash, size_t length, int* value);
+int myStrncmp(char *str_one, char *str_two, size_t num);
+ErrorNum findWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, size_t length, int* value);
+//extern "C" ErrorNum findWord(HashTableInfo* hash_table, char* buffer, uint32_t hash, size_t length, int* value);
 
 #endif // WORKINGWITHTABLE_H

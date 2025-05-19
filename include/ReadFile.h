@@ -8,7 +8,7 @@
 #include "HandleError.h"
 
 ErrorNum readFile(const char** file_name, char** buffer);
-ErrorNum processWordFromBuffer(char* buffer, size_t* length, size_t* hash);
+ErrorNum processWordFromBuffer(char* buffer, size_t* length, uint32_t* hash);
 ErrorNum skipBlankLines(char** buffer);
 
 #endif // READFILE_H

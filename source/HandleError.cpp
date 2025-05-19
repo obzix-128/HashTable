@@ -108,10 +108,19 @@ ErrorNum hashTableVerificator(HashTableInfo* hash_table)
     {
         for(int i = hash_table->bucket[counter].list.cell[0].next; i != 0; i = hash_table->bucket[counter].list.cell[i].next) 
         {
-            size_t hash = calculateHash(hash_table->buffer + hash_table->bucket[counter].list.cell[i].data);
+            size_t word_length = strlen(hash_table->buffer + hash_table->bucket[counter].list.cell[i].data);
+
+            if(word_length >= ALIGNMENT_D) // Проверяю слово на превышение длины
+            {
+                fprintf(stderr, "The error is caused by the word: %.*s\n", (unsigned int)word_length, 
+                        hash_table->buffer + hash_table->bucket[counter].list.cell[i].data           );
+                handleError(LENGTH_ERROR, __PRETTY_FUNCTION__);
+                return LENGTH_ERROR;
+            }
+            uint32_t hash = calculateHash(hash_table->buffer + hash_table->bucket[counter].list.cell[i].data, word_length);
             hash = hash % NUM_OF_BUCKETS_D; // Приведение к размеру таблицы
 
-            if(hash != (size_t)counter)
+            if(hash != (uint32_t)counter)
             {
                 return HASH_ERROR;
             }

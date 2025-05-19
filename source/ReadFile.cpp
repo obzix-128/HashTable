@@ -41,7 +41,7 @@ ErrorNum readFile(const char** file_name, char** buffer)
 /*------------------------------------------------------------------------------------------------------------------------------------
 Проверяет, чтобы слова в буфере не превышали максимальной допустимой длины и считает их хэш.
 ------------------------------------------------------------------------------------------------------------------------------------*/
-ErrorNum processWordFromBuffer(char* buffer, size_t* length, size_t* hash)
+ErrorNum processWordFromBuffer(char* buffer, size_t* length, uint32_t* hash)
 {
     CHECK_NULL_ADDR_ERROR(buffer, NULL_ADDRESS_ERROR);
 
@@ -54,7 +54,8 @@ ErrorNum processWordFromBuffer(char* buffer, size_t* length, size_t* hash)
         return LENGTH_ERROR;
     }
 
-    size_t word_hash = calculateHash(buffer); // Считаю хэш для слова
+    uint32_t word_hash = calculateHash(buffer, word_length); // Считаю хэш для слова
+
     *hash = word_hash % NUM_OF_BUCKETS_D; // Приведение к размеру таблицы
     *length = word_length;
 
